@@ -1,9 +1,11 @@
 <script>
   import ChairHUD from "./lib/ChairHUD.svelte";
+  import PressureReading from "./lib/PressureReading.svelte";
 </script>
 
 <main>
   <ChairHUD />
+  <PressureReading />
 </main>
 
 <style>
@@ -11,11 +13,23 @@
     margin: 0;
     background: #0b1016;
     color: #d9f2ff;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    font-family:
+      system-ui,
+      -apple-system,
+      Segoe UI,
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      "Noto Sans",
+      "Liberation Sans",
+      sans-serif;
   }
   main {
     min-height: 100dvh;
     display: grid;
     place-items: center;
+  }
+  #app {
+    padding: 0;
   }
 </style>
