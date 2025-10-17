@@ -12,6 +12,43 @@
     size: 2 + Math.random() * 3,
     delay: Math.random() * 3
   }));
+
+    let seconds = 0;
+  let interval = null;
+
+  // Start the timer fresh every time
+  function startTimer() {
+  resetTimer(); // clear and reset
+  interval = setInterval(() => {
+    seconds = seconds + 1; // keep this reactive
+  }, 1000);
+}
+
+  function stopTimer() {
+    if (interval) {
+      clearInterval(interval);
+      interval = null; // <- important so startTimer() knows there's no running timer
+    }
+  }
+
+  function resetTimer() {
+    stopTimer();
+    seconds = 0;
+  }
+
+  // reactive computed time string — re-runs when `seconds` changes
+  $: timeElapsed = getTimeElapsed();
+
+  function getTimeElapsed() {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  // Called whenever a slider is changed
+  function onSliderChange() {
+    startTimer();
+  }
 </script>
 
 <div class="hud" style="--glow:{glow}">
@@ -86,11 +123,15 @@
       <div class="readouts">
         <div class="metric">
           <div class="label">RECLINE <span>{recline}&deg;</span></div>
-          <input class="mini-range" type="range" min="0" max="60" bind:value={recline} />
+          <input class="mini-range" type="range" min="0" max="60" bind:value={recline} on:change={onSliderChange} />
         </div>
         <div class="metric">
           <div class="label">LEG REST <span>{leg}&deg;</span></div>
-          <input class="mini-range" type="range" min="0" max="70" bind:value={leg} />
+          <input class="mini-range" type="range" min="0" max="70" bind:value={leg} on:change={onSliderChange} />
+        </div>
+        <div class="timer">
+          <div class="label">TIME ELAPSED:</div>
+          <div class="value">{timeElapsed}</div>
         </div>
       </div>
     </div>
@@ -249,6 +290,7 @@
   .metric { display: grid; gap: 6px; }
   .label { width: 100%; }
   .label span { float: right; color: hsl(190 100% 70%); }
+  .timer { grid-column: span 2; text-align: center; }
 
   .mini-range {
     -webkit-appearance: none;
