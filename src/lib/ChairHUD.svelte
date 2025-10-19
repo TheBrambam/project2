@@ -37,11 +37,11 @@
   }
 
   // reactive computed time string — re-runs when `seconds` changes
-  $: timeElapsed = getTimeElapsed();
+  $: timeElapsed = getTimeElapsed(seconds);
 
-  function getTimeElapsed() {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
+  function getTimeElapsed(s) {
+    const mins = Math.floor(s / 60);
+    const secs = s % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
 
