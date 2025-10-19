@@ -11,6 +11,43 @@
     size: 2 + Math.random() * 3,
     delay: Math.random() * 3,
   }));
+
+  let seconds = 0;
+  let interval = null;
+
+  // Start the timer fresh every time
+  function startTimer() {
+    resetTimer(); // clear and reset
+    interval = setInterval(() => {
+      seconds = seconds + 1; // keep this reactive
+    }, 1000);
+  }
+
+  function stopTimer() {
+    if (interval) {
+      clearInterval(interval);
+      interval = null; // <- important so startTimer() knows there's no running timer
+    }
+  }
+
+  function resetTimer() {
+    stopTimer();
+    seconds = 0;
+  }
+
+  // reactive computed time string — re-runs when `seconds` changes
+  $: timeElapsed = getTimeElapsed(seconds);
+
+  function getTimeElapsed(s) {
+    const mins = Math.floor(s / 60);
+    const secs = s % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  }
+
+  // Called whenever a slider is changed
+  function onSliderChange() {
+    startTimer();
+  }
 </script>
 
 <div class="hud" style="--glow:{glow}">
@@ -44,7 +81,7 @@
         aria-label="Reclining chair"
       >
         <!-- base platform + pedestal -->
-        <g opacity="0.9">
+        <!-- <g opacity="0.9">
           <rect x="28" y="126" width="164" height="10" rx="5" class="line" />
           <rect x="96" y="119" width="28" height="6" rx="2" class="line" />
           <ellipse
@@ -74,11 +111,8 @@
         </g>
 
         <!-- Armrest -->
-        <path
-          d="M70,92 h62 a7,7 0 0 1 7,7 v4 h-14 v-2 a3,3 0 0 0-3-3 H70 z"
-          class="line"
-          opacity="0.85"
-        />
+        <!-- <path d="M70,92 h62 a7,7 0 0 1 7,7 v4 h-14 v-2 a3,3 0 0 0-3-3 H70 z"
+              class="line" opacity="0.85"/> -->
 
         <!-- Leg rest -->
         <g transform="translate(158,106) rotate({chair.leg})">
@@ -105,6 +139,7 @@
             min="0"
             max="60"
             bind:value={chair.recline}
+            on:change={onSliderChange}
           />
         </div>
         <div class="metric">
@@ -115,7 +150,12 @@
             min="0"
             max="70"
             bind:value={chair.leg}
+            on:change={onSliderChange}
           />
+        </div>
+        <div class="timer">
+          <div class="label">TIME ELAPSED:</div>
+          <div class="value">{timeElapsed}</div>
         </div>
       </div>
     </div>
@@ -304,6 +344,10 @@
   .label span {
     float: right;
     color: hsl(190 100% 70%);
+  }
+  .timer {
+    grid-column: span 2;
+    text-align: center;
   }
 
   .mini-range {
