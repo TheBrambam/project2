@@ -77,11 +77,11 @@
       <!-- Chair SVG -->
       <svg class="chair" viewBox="0 0 220 150" width="240" height="164" aria-label="Reclining chair">
         <!-- base platform + pedestal -->
-        <g opacity="0.9">
+        <!-- <g opacity="0.9">
           <rect x="28" y="126" width="164" height="10" rx="5" class="line" />
           <rect x="96" y="119" width="28" height="6" rx="2" class="line" />
           <ellipse cx="110" cy="127" rx="7" ry="3.5" fill="hsl(190 100% 80% / 0.35)"/>
-        </g>
+        </g> -->
 
         <!-- Seat -->
         <rect x="62" y="96" width="96" height="20" rx="7" class="panel"/>
@@ -101,8 +101,8 @@
         </g>
 
         <!-- Armrest -->
-        <path d="M70,92 h62 a7,7 0 0 1 7,7 v4 h-14 v-2 a3,3 0 0 0-3-3 H70 z"
-              class="line" opacity="0.85"/>
+        <!-- <path d="M70,92 h62 a7,7 0 0 1 7,7 v4 h-14 v-2 a3,3 0 0 0-3-3 H70 z"
+              class="line" opacity="0.85"/> -->
 
         <!-- Leg rest -->
         <g transform="translate(158,106) rotate({leg})">
