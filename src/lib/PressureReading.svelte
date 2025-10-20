@@ -86,7 +86,15 @@
         );
         box.position = new Vector3(i - 2.5, height / 20, j - 2.5);
         const boxMaterial = new StandardMaterial(`boxMat-${i}-${j}`, scene);
-        boxMaterial.diffuseColor = new Color3(0.2, 0.6, 0.8);
+        const color = myColor(chair.pressureReadings[i][j]);
+        const hexColor = color
+          .toString()
+          .replace("rgb(", "")
+          .replace(")", "")
+          .split(",")
+          .map((c) => parseInt(c, 10).toString(16).padStart(2, "0"))
+          .join("");
+        boxMaterial.diffuseColor = Color3.FromHexString(`#${hexColor}`);
         box.material = boxMaterial;
       });
     });
@@ -104,6 +112,17 @@
       row.forEach((height, j) => {
         const box = scene.getMeshByName(`zone-${i}-${j}`);
         box.position = new Vector3(i - 2.5, height / 20, j - 2.5);
+        const boxMaterial = scene.getMaterialByName(`boxMat-${i}-${j}`);
+        const color = myColor(chair.pressureReadings[i][j]);
+        const hexColor = color
+          .toString()
+          .replace("rgb(", "")
+          .replace(")", "")
+          .split(",")
+          .map((c) => parseInt(c, 10).toString(16).padStart(2, "0"))
+          .join("");
+        boxMaterial.diffuseColor = Color3.FromHexString(`#${hexColor}`);
+        box.material = boxMaterial;
       });
     });
     if (user.posturePressure.flat().reduce((a, b) => a + b, 0) === 0) {
@@ -125,10 +144,8 @@
       }
       scale = 0;
     } else {
-      if (!chair.postureAlert && chair.activePositionTime == 0) {
-        chair.postureAlert = true;
-      }
       if (!chair.timer) {
+        chair.postureAlert = true;
         chair.activePositionTime = 0;
         chair.timer = setInterval(() => {
           chair.activePositionTime = chair.activePositionTime + 1;
@@ -141,7 +158,7 @@
           user.posturePressure[i][j] -
           chair.zoneHeights[i][j] * 2 +
           (i - 3) * (chair.recline / 3) * scale +
-          -(i - 3) * ((chair.leg - 70) / 6) * scale
+          -(i - 3) * ((chair.leg - 80) / 6) * scale
       )
     );
     svg.selectAll("*").remove();

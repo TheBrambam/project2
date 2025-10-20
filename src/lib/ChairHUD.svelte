@@ -1,7 +1,8 @@
 <script>
+  import { onMount, onDestroy } from "svelte";
   // Separate interactive controls
   import { chair } from "../chair.svelte.js";
-  import { goodPosture } from "../user.svelte.js";
+  import { goodPosture, user } from "../user.svelte.js";
   let glow = 0.65; // UI glow intensity for the HUD
 
   // blips for motion
@@ -31,6 +32,7 @@
   function resetTimer() {
     stopTimer();
     chair.activePositionTime = 0;
+    chair.postureAlert = true;
   }
 
   // reactive computed time string — re-runs when `seconds` changes
@@ -47,8 +49,7 @@
   }
 
   $effect(() => {
-    if (chair.postureAlert) {
-    }
+    console.log(chair.postureAlert);
   });
 </script>
 
@@ -147,7 +148,7 @@
               class="mini-range"
               type="range"
               min="0"
-              max="70"
+              max="80"
               bind:value={chair.leg}
               onchange={onSliderChange}
             />
@@ -164,6 +165,23 @@
           <div class="buttons">
             <button
               onclick={() => {
+                chair.zoneHeights = [
+                  [0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0],
+                ];
+                chair.pressureReadings = chair.pressureReadings.map((row, i) =>
+                  row.map(
+                    (value, j) =>
+                      user.posturePressure[i][j] -
+                      chair.zoneHeights[i][j] * 2 +
+                      (i - 3) * (chair.recline / 3) +
+                      -(i - 3) * ((chair.leg - 80) / 6)
+                  )
+                );
                 chair.zoneHeights = chair.pressureReadings.map((row, i) =>
                   row.map((value, j) =>
                     Math.max(
