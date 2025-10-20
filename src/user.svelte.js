@@ -22,9 +22,17 @@ export const leanRight = [
     [10, 25, 70, 90, 45, 30],
     [ 0, 5, 10, 30, 25, 15]];
 
+export const standing = [
+    [ 0,  0,  0,  0,  0,  0],
+    [ 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+    [ 0, 0, 0, 0, 0, 0]];
+
 export const user = $state({
     name: "John Doe",
     weight: 180, // in pounds
     height: 70,  // in inches
-    posturePressure: goodPosture,
+    posturePressure: standing,
 });

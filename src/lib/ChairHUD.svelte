@@ -1,6 +1,7 @@
 <script>
   // Separate interactive controls
   import { chair } from "../chair.svelte.js";
+  import { goodPosture } from "../user.svelte.js";
   let glow = 0.65; // UI glow intensity for the HUD
 
   // blips for motion
@@ -12,31 +13,27 @@
     delay: Math.random() * 3,
   }));
 
-  let seconds = 0;
-  let interval = null;
-
   // Start the timer fresh every time
   function startTimer() {
     resetTimer(); // clear and reset
-    interval = setInterval(() => {
-      seconds = seconds + 1; // keep this reactive
+    chair.timer = setInterval(() => {
+      chair.activePositionTime = chair.activePositionTime + 1; // keep this reactive
     }, 1000);
   }
 
   function stopTimer() {
-    if (interval) {
-      clearInterval(interval);
-      interval = null; // <- important so startTimer() knows there's no running timer
+    if (chair.timer) {
+      clearInterval(chair.timer);
+      chair.timer = null; // <- important so startTimer() knows there's no running timer
     }
   }
 
   function resetTimer() {
     stopTimer();
-    seconds = 0;
+    chair.activePositionTime = 0;
   }
 
   // reactive computed time string — re-runs when `seconds` changes
-  $: timeElapsed = getTimeElapsed(seconds);
 
   function getTimeElapsed(s) {
     const mins = Math.floor(s / 60);
@@ -48,16 +45,17 @@
   function onSliderChange() {
     startTimer();
   }
+
+  $effect(() => {
+    if (chair.postureAlert) {
+    }
+  });
 </script>
 
 <div class="hud" style="--glow:{glow}">
   <div class="dial">
     <div class="rings"></div>
     <div class="grid"></div>
-
-    {#each [50, 100, 150, 200, 250, 300] as r}
-      <div class="tick" style="--r:{r}px">{r}</div>
-    {/each}
 
     {#each blips as b}
       <div
@@ -72,16 +70,17 @@
     {/each}
 
     <div class="center">
-      <!-- Chair SVG -->
-      <svg
-        class="chair"
-        viewBox="0 0 220 150"
-        width="240"
-        height="164"
-        aria-label="Reclining chair"
-      >
-        <!-- base platform + pedestal -->
-        <!-- <g opacity="0.9">
+      {#if !chair.postureAlert}
+        <!-- Chair SVG -->
+        <svg
+          class="chair"
+          viewBox="0 0 220 170"
+          width="240"
+          height="164"
+          aria-label="Reclining chair"
+        >
+          <!-- base platform + pedestal -->
+          <!-- <g opacity="0.9">
           <rect x="28" y="126" width="164" height="10" rx="5" class="line" />
           <rect x="96" y="119" width="28" height="6" rx="2" class="line" />
           <ellipse
@@ -94,85 +93,113 @@
         </g>
 
         <!-- Seat -->
-        <rect x="62" y="96" width="96" height="20" rx="7" class="panel" />
-        <g class="hair">
-          <line x1="72" y1="106" x2="148" y2="106" />
-          <line x1="72" y1="102" x2="148" y2="102" />
-        </g>
-
-        <!-- Backrest -->
-        <g transform="translate(62,96) rotate({-chair.recline})">
-          <rect x="-6" y="-72" width="20" height="72" rx="9" class="panel" />
-          <rect x="2" y="-88" width="10" height="16" rx="8" class="panel" />
-          <!-- <ellipse cx="16" cy="-34" rx="14" ry="8" class="panel" /> -->
-          <g class="hair" opacity="0.9">
-            <line x1="4" y1="-66" x2="4" y2="-8" />
+          <rect x="62" y="96" width="96" height="20" rx="7" class="panel" />
+          <g class="hair">
+            <line x1="72" y1="106" x2="148" y2="106" />
+            <line x1="72" y1="102" x2="148" y2="102" />
           </g>
-        </g>
 
-        <!-- Armrest -->
-        <!-- <path d="M70,92 h62 a7,7 0 0 1 7,7 v4 h-14 v-2 a3,3 0 0 0-3-3 H70 z"
+          <!-- Backrest -->
+          <g transform="translate(62,96) rotate({-chair.recline})">
+            <rect x="-6" y="-72" width="20" height="72" rx="9" class="panel" />
+            <rect x="2" y="-88" width="10" height="16" rx="8" class="panel" />
+            <!-- <ellipse cx="16" cy="-34" rx="14" ry="8" class="panel" /> -->
+            <g class="hair" opacity="0.9">
+              <line x1="4" y1="-66" x2="4" y2="-8" />
+            </g>
+          </g>
+
+          <!-- Armrest -->
+          <!-- <path d="M70,92 h62 a7,7 0 0 1 7,7 v4 h-14 v-2 a3,3 0 0 0-3-3 H70 z"
               class="line" opacity="0.85"/> -->
 
-        <!-- Leg rest -->
-        <g transform="translate(158,106) rotate({chair.leg})">
-          <rect x="0" y="-14" width="54" height="14" rx="6" class="panel" />
-          <g class="hair">
-            <line x1="8" y1="-12" x2="8" y2="-4" />
-            <line x1="18" y1="-12" x2="18" y2="-4" />
-            <line x1="28" y1="-12" x2="28" y2="-4" />
-            <line x1="38" y1="-12" x2="38" y2="-4" />
-            <line x1="48" y1="-12" x2="48" y2="-4" />
+          <!-- Leg rest -->
+          <g transform="translate(158,106) rotate({chair.leg})">
+            <rect x="0" y="-14" width="54" height="14" rx="6" class="panel" />
+            <g class="hair">
+              <line x1="8" y1="-12" x2="8" y2="-4" />
+              <line x1="18" y1="-12" x2="18" y2="-4" />
+              <line x1="28" y1="-12" x2="28" y2="-4" />
+              <line x1="38" y1="-12" x2="38" y2="-4" />
+              <line x1="48" y1="-12" x2="48" y2="-4" />
+            </g>
           </g>
-        </g>
 
-        <path d="M74,116 h72" class="line" opacity="0.6" />
-      </svg>
+          <path d="M74,116 h72" class="line" opacity="0.6" />
+        </svg>
 
-      <!-- Sliders under labels -->
-      <div class="readouts">
-        <div class="metric">
-          <div class="label">RECLINE <span>{chair.recline}&deg;</span></div>
-          <input
-            class="mini-range"
-            type="range"
-            min="0"
-            max="60"
-            bind:value={chair.recline}
-            on:change={onSliderChange}
-          />
+        <!-- Sliders under labels -->
+        <div class="readouts">
+          <div class="metric">
+            <div class="label">RECLINE <span>{chair.recline}&deg;</span></div>
+            <input
+              class="mini-range"
+              type="range"
+              min="0"
+              max="60"
+              bind:value={chair.recline}
+              onchange={onSliderChange}
+            />
+          </div>
+          <div class="metric">
+            <div class="label">LEG REST <span>{chair.leg}&deg;</span></div>
+            <input
+              class="mini-range"
+              type="range"
+              min="0"
+              max="70"
+              bind:value={chair.leg}
+              onchange={onSliderChange}
+            />
+          </div>
+          <div class="timer">
+            <div class="label">TIME ELAPSED:</div>
+            <div class="value">{getTimeElapsed(chair.activePositionTime)}</div>
+          </div>
         </div>
-        <div class="metric">
-          <div class="label">LEG REST <span>{chair.leg}&deg;</span></div>
-          <input
-            class="mini-range"
-            type="range"
-            min="0"
-            max="70"
-            bind:value={chair.leg}
-            on:change={onSliderChange}
-          />
+      {:else}
+        <div class="alert-message">
+          <strong>Posture Alert</strong>
+          <p>Would you like to automatically adjust your posture?</p>
+          <div class="buttons">
+            <button
+              onclick={() => {
+                chair.zoneHeights = chair.pressureReadings.map((row, i) =>
+                  row.map((value, j) =>
+                    Math.max(
+                      Math.min(value - goodPosture[i][j], chair.maxAdjust),
+                      chair.minAdjust
+                    )
+                  )
+                );
+                chair.postureAlert = false;
+              }}>Yes</button
+            >
+            <button
+              onclick={() => {
+                chair.postureAlert = false;
+              }}>No</button
+            >
+          </div>
         </div>
-        <div class="timer">
-          <div class="label">TIME ELAPSED:</div>
-          <div class="value">{timeElapsed}</div>
-        </div>
-      </div>
+      {/if}
     </div>
   </div>
 
   <!-- Glow control -->
-  <div class="controls">
+  <!-- <div class="controls">
     <label
       >Glow
       <input type="range" min="0" max="1" step="0.05" bind:value={glow} />
     </label>
-  </div>
+  </div> -->
 </div>
 
 <style>
   .hud {
-    width: min(88vw, 75vh);
+    border-right: solid white 3px;
+    padding-right: 5rem;
+    height: 90%;
     aspect-ratio: 1/1;
     position: relative;
     display: grid;
@@ -273,7 +300,14 @@
       transform: scale(1.8) translate(-50%, -50%);
     }
   }
-
+  .alert-message {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
   .center {
     position: absolute;
     inset: 50% auto auto 50%;
