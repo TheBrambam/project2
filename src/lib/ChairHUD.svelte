@@ -1,4 +1,5 @@
 <script>
+  import { onMount, onDestroy } from 'svelte';
   // Separate interactive controls
   let recline = 18;   // back angle (deg), 0 = upright
   let leg = 10;       // leg rest angle (deg), 0 = stowed
@@ -49,6 +50,14 @@
   function onSliderChange() {
     startTimer();
   }
+
+  // Start on mount; cleanup on destroy
+  onMount(() => {
+    startTimer();
+  });
+  onDestroy(() => {
+    stopTimer();
+  });
 </script>
 
 <div class="hud" style="--glow:{glow}">
