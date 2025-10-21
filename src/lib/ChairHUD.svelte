@@ -1,5 +1,4 @@
 <script>
-  import { onMount, onDestroy } from "svelte";
   // Separate interactive controls
   import { chair } from "../chair.svelte.js";
   import { goodPosture, user } from "../user.svelte.js";
@@ -79,21 +78,11 @@
           width="240"
           height="164"
           aria-label="Reclining chair"
+          onclick={() => {
+            chair.postureAlert = true;
+          }}
         >
-          <!-- base platform + pedestal -->
-          <!-- <g opacity="0.9">
-          <rect x="28" y="126" width="164" height="10" rx="5" class="line" />
-          <rect x="96" y="119" width="28" height="6" rx="2" class="line" />
-          <ellipse
-            cx="110"
-            cy="127"
-            rx="7"
-            ry="3.5"
-            fill="hsl(190 100% 80% / 0.35)"
-          />
-        </g>
-
-        <!-- Seat -->
+          <!-- Seat -->
           <rect x="62" y="96" width="96" height="20" rx="7" class="panel" />
           <g class="hair">
             <line x1="72" y1="106" x2="148" y2="106" />
@@ -109,10 +98,6 @@
               <line x1="4" y1="-66" x2="4" y2="-8" />
             </g>
           </g>
-
-          <!-- Armrest -->
-          <!-- <path d="M70,92 h62 a7,7 0 0 1 7,7 v4 h-14 v-2 a3,3 0 0 0-3-3 H70 z"
-              class="line" opacity="0.85"/> -->
 
           <!-- Leg rest -->
           <g transform="translate(158,106) rotate({chair.leg})">
@@ -214,6 +199,9 @@
 </div>
 
 <style>
+  svg {
+    cursor: pointer;
+  }
   .hud {
     border-right: solid white 3px;
     padding-right: 5rem;
@@ -265,23 +253,6 @@
       transparent 1deg 15deg
     );
     mask: radial-gradient(circle at 50% 50%, transparent 0 26px, #000 32px);
-  }
-
-  .tick {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    translate: -50% -50%;
-    width: calc(var(--r) * 2);
-    height: calc(var(--r) * 2);
-    border: 1px dashed hsl(190 100% 55% / 0.18);
-    border-radius: 50%;
-    pointer-events: none;
-    font-size: 10px;
-    color: hsl(190 100% 70% / 0.7);
-    display: grid;
-    place-items: start end;
-    padding: 6px;
   }
 
   .blip {
@@ -426,53 +397,5 @@
       0 0 0 3px hsl(190 100% 60%),
       0 0 14px 2px hsl(190 100% 60% / 0.6);
     cursor: pointer;
-  }
-
-  .controls {
-    position: absolute;
-    bottom: -74px;
-    width: 36%;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    color: hsl(190 100% 85%);
-  }
-  .controls label {
-    display: grid;
-    gap: 6px;
-  }
-  .controls input[type="range"] {
-    -webkit-appearance: none;
-    appearance: none;
-    height: 6px;
-    border-radius: 999px;
-    background: linear-gradient(
-      90deg,
-      hsl(190 100% 60% / 0.3),
-      hsl(190 100% 60% / 0.6)
-    );
-    outline: none;
-    box-shadow: inset 0 0 0 1px hsl(190 100% 60% / 0.35);
-  }
-  .controls input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: white;
-    box-shadow:
-      0 0 0 3px hsl(190 100% 60%),
-      0 0 18px 2px hsl(190 100% 60% / 0.6);
-    cursor: pointer;
-  }
-
-  @media (max-width: 760px) {
-    .controls {
-      width: 82%;
-      bottom: -96px;
-    }
   }
 </style>

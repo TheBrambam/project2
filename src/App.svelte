@@ -36,9 +36,6 @@
     display: grid;
     place-items: center;
   }
-  #app {
-    padding: 0;
-  }
   .vert-splitter {
     display: flex;
     flex-direction: row;

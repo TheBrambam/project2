@@ -3,21 +3,13 @@
   import { onMount } from "svelte";
   import { chair } from "../chair.svelte.js";
 
-  import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera.js";
   import { Engine } from "@babylonjs/core/Engines/engine.js";
   import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight.js";
   import { Vector3 } from "@babylonjs/core/Maths/math.vector.js";
-  import { CreateGround } from "@babylonjs/core/Meshes/Builders/groundBuilder.js";
-  import { CreateSphere } from "@babylonjs/core/Meshes/Builders/sphereBuilder.js";
   import { Scene } from "@babylonjs/core/scene.js";
-
-  import { GridMaterial } from "@babylonjs/materials/grid/gridMaterial.js";
   import {
     Color3,
     Color4,
-    CreateBox,
-    DirectionalLight,
-    Material,
     MeshBuilder,
     StandardMaterial,
     TargetCamera,
@@ -203,5 +195,6 @@
     align-items: center;
     justify-content: center;
     gap: 1rem;
+    margin-left: 8rem;
   }
 </style>
