@@ -1,22 +1,16 @@
 {
   "name": "project2",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && cp -f dist/index.html dist/404.html",
     "preview": "vite preview"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^6.1.1",
-    "@types/d3": "^7.4.3",
     "svelte": "^5.38.1",
     "vite": "^7.1.2"
-  },
-  "dependencies": {
-    "@babylonjs/core": "^8.31.3",
-    "@babylonjs/materials": "^8.31.3",
-    "d3": "^7.9.0"
   }
 }
